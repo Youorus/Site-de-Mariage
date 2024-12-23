@@ -9,13 +9,36 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-primary: #a87e6f;
+    --color-secondary: #8c6b5d;
+    --color-accent: #936a5f;
+    --color-bg: #fff8f0;
+    --color-text: #5a4a42;
+
+    --font-poppins: "Poppins", sans-serif;
   }
+}
+
+.fade-in {
+  animation: fadeIn 1.5s ease-out forwards;
+}
+
+.bg-fade-in {
+  animation: fadeIn 2s ease-out forwards;
+}
+
+h1,
+h2,
+h3 {
+  @apply font-bold;
+}
+
+a {
+  @apply transition duration-300 ease-in-out;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), sans-serif;
 }
