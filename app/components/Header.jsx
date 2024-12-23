@@ -6,7 +6,7 @@ export default function Header() {
       {/* Logo cliquable */}
       <Link
         href="/"
-        className="text-4xl sm:text-5xl font-extrabold cursor-pointer"
+        className="text-4xl sm:text-5xl font-extrabold cursor-pointer iphone-se:text-3xl iphone-14-pro:text-4xl"
       >
         F&M
       </Link>
@@ -15,14 +15,13 @@ export default function Header() {
       <nav className="flex space-x-2 sm:space-x-8">
         <Link
           href="/programme"
-          className="p-5 text-base sm:text-lg border  border-[var(--color-primary)] transition-all duration-300
-       "
+          className="p-4 text-sm sm:text-lg iphone-se:text-xs iphone-14-pro:text-sm border border-[var(--color-primary)] transition-all duration-300"
         >
           Programme
         </Link>
         <Link
-          href="/notre-histoire"
-          className="p-5 text-base sm:text-lg bg-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:scale-105 transition-all duration-300"
+          href="/notreHistoire"
+          className="p-4 text-sm sm:text-lg iphone-se:text-xs iphone-14-pro:text-sm bg-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:scale-105 transition-all duration-300"
         >
           Notre Histoire
         </Link>
