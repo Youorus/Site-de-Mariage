@@ -8,7 +8,7 @@ export default function Header() {
         href="/"
         className="text-4xl sm:text-5xl font-extrabold cursor-pointer iphone-se:text-3xl iphone-14-pro:text-4xl"
       >
-        F&M
+        M&F
       </Link>
 
       {/* Navigation principale */}

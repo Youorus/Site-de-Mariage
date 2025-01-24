@@ -8,12 +8,12 @@ export default function Layout({ children }) {
       {/* Image de fond responsive */}
       <div className="absolute inset-0 w-full h-full">
         <Image
-          src="/marier.jpg"
+          src="/FM-Home.jpg"
           alt="Mariage"
           layout="fill"
           objectFit="cover"
           priority
-          className="z-0"
+          className="mr-10"
         />
         <div className="absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-700 ease-in-out"></div>
       </div>

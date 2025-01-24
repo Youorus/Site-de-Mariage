@@ -26,6 +26,10 @@
 .bg-fade-in {
   animation: fadeIn 2s ease-out forwards;
 }
+.text-perfect-align {
+  text-align: justify;
+  text-justify: inter-word; /* Pour un espacement optimisé des mots */
+}
 
 h1,
 h2,

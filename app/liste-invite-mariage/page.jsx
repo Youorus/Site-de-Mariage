@@ -2,140 +2,179 @@
 import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 
-const test = [
-  {
-    id: 1,
-    nom: "Ndiaye",
-    prenom: "Jean-Paul",
-    date_confirmation: "2024-05-15",
-  },
-  {
-    id: 2,
-    nom: "Mbarga",
-    prenom: "Lucie",
-    date_confirmation: "2024-05-16",
-  },
-  {
-    id: 3,
-    nom: "Ewane",
-    prenom: "Paul-Arthur",
-    date_confirmation: "2024-05-20",
-  },
-  {
-    id: 4,
-    nom: "Tchatchoua",
-    prenom: "Amandine",
-    date_confirmation: "2024-05-22",
-  },
-  {
-    id: 5,
-    nom: "Kamdem",
-    prenom: "Emmanuel",
-    date_confirmation: "2024-05-25",
-  },
-  {
-    id: 6,
-    nom: "Biloa",
-    prenom: "Patricia",
-    date_confirmation: "2024-05-27",
-  },
-  {
-    id: 7,
-    nom: "Ngono",
-    prenom: "Serge-Alain",
-    date_confirmation: "2024-05-30",
-  },
-  {
-    id: 8,
-    nom: "Ekobo",
-    prenom: "Sylvie",
-    date_confirmation: "2024-06-01",
-  },
-  {
-    id: 9,
-    nom: "Fomena",
-    prenom: "Michel",
-    date_confirmation: "2024-06-05",
-  },
-  {
-    id: 10,
-    nom: "Tientcheu",
-    prenom: "Estelle",
-    date_confirmation: "2024-06-07",
-  },
-];
-
 export default function Invites() {
   const [invites, setInvites] = useState([]);
   const [totalInvites, setTotalInvites] = useState(0);
+  const [totalFamilles, setTotalFamilles] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedInvite, setSelectedInvite] = useState(null);
+
+  // Fonction pour récupérer les données via API
+  const fetchInvites = async () => {
+    try {
+      const response = await fetch("/api/invites", { method: "GET" });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des invités");
+      }
+      const data = await response.json();
+
+      setInvites(data);
+
+      // Calcul des totaux
+      const totalPersons = data.reduce(
+        (acc, invite) => acc + invite.adultes + invite.enfants,
+        0
+      );
+      setTotalInvites(totalPersons);
+
+      const totalFamilies = data.filter((invite) => invite.is_family).length;
+      setTotalFamilles(totalFamilies);
+    } catch (error) {
+      console.error("Erreur:", error.message);
+    }
+  };
 
   useEffect(() => {
-    const fetchInvites = async () => {
-      const data = test;
-      setInvites(data);
-      setTotalInvites(data.length);
-    };
-
     fetchInvites();
   }, []);
 
+  // Fonction pour ouvrir le modal
+  const handleDeleteClick = (invite) => {
+    setSelectedInvite(invite);
+    setShowModal(true);
+  };
+
+  // Fonction pour confirmer la suppression
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await fetch(`/api/invites?id=${selectedInvite.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de l'invité");
+      }
+      setInvites((prevInvites) =>
+        prevInvites.filter((invite) => invite.id !== selectedInvite.id)
+      );
+      setShowModal(false);
+      setSelectedInvite(null);
+    } catch (error) {
+      console.error("Erreur:", error.message);
+    }
+  };
+
+  // Fonction pour fermer le modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedInvite(null);
+  };
+
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 iphone-se:p-4 iphone-14-pro:p-6">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-[#A87E6F] mb-10 iphone-se:text-3xl iphone-14-pro:text-4xl">
+      <div className="max-w-full sm:max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-8">
+        {/* Titre principal */}
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-center text-[#A87E6F] mb-6">
           Liste des Invités
         </h1>
 
-        {/* Section Total */}
-        <div className="flex justify-between items-center mb-8 iphone-se:flex-col iphone-se:items-start iphone-14-pro:flex-row">
-          <h2 className="text-2xl font-semibold iphone-se:text-lg iphone-14-pro:text-xl">
-            Total des invités :
-          </h2>
-          <span className="text-3xl font-bold text-[#8C6B5D] iphone-se:text-2xl iphone-14-pro:text-3xl">
-            {totalInvites}
-          </span>
+        {/* Section Totaux */}
+        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+          <div>
+            <h2 className="text-lg sm:text-2xl font-semibold">
+              Total des invités : {totalInvites}
+            </h2>
+          </div>
+          <div>
+            <h2 className="text-lg sm:text-2xl font-semibold">
+              Familles présentes : {totalFamilles}
+            </h2>
+          </div>
         </div>
 
-        {/* Scrollable Card */}
-        <div className="h-[400px] overflow-y-auto border-t border-gray-200">
-          <table className="w-full table-auto border-collapse">
-            <thead>
-              <tr className="bg-[#A87E6F] text-white iphone-se:text-sm">
-                <th className="px-4 py-3 text-left">Nom</th>
-                <th className="px-4 py-3 text-left">Prénom</th>
-                <th className="px-4 py-3 text-left">Date de Confirmation</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invites.map((invite, index) => (
-                <tr
-                  key={invite.id}
-                  className={`border-b ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  } hover:bg-gray-100 transition-colors`}
-                >
-                  <td className="px-4 py-4 iphone-se:px-2 iphone-se:py-2">
-                    {invite.nom}
-                  </td>
-                  <td className="px-4 py-4 iphone-se:px-2 iphone-se:py-2">
-                    {invite.prenom}
-                  </td>
-                  <td className="px-4 py-4 iphone-se:px-2 iphone-se:py-2">
-                    {new Date(invite.date_confirmation).toLocaleDateString(
-                      "fr-FR"
-                    )}
-                  </td>
+        {/* Table des invités */}
+        <div className="h-[300px] sm:h-[400px] overflow-x-auto border-t border-gray-200 rounded-lg">
+          {invites.length > 0 ? (
+            <table className="w-full table-auto border-collapse text-sm sm:text-base">
+              <thead>
+                <tr className="bg-[#A87E6F] text-white">
+                  <th className="px-2 sm:px-4 py-2 text-left">Nom</th>
+                  <th className="px-2 sm:px-4 py-2 text-left">Prénom</th>
+                  <th className="px-2 sm:px-4 py-2 text-left">
+                    Date de Confirmation
+                  </th>
+                  <th className="px-2 sm:px-4 py-2 text-left">Nombre</th>
+                  <th className="px-2 sm:px-4 py-2 text-left">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {invites.length === 0 && (
-            <p className="text-center py-6 text-lg italic text-gray-500 iphone-se:text-sm">
+              </thead>
+              <tbody>
+                {invites.map((invite, index) => (
+                  <tr
+                    key={invite.id}
+                    className={`border-b ${
+                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } hover:bg-gray-100 group transition-colors`}
+                  >
+                    <td className="px-2 sm:px-4 py-2">{invite.nom}</td>
+                    <td className="px-2 sm:px-4 py-2">{invite.prenom}</td>
+                    <td className="px-2 sm:px-4 py-2">
+                      {new Date(invite.date_confirmation).toLocaleDateString(
+                        "fr-FR"
+                      )}
+                    </td>
+                    <td className=" sm:px-1 py-2">
+                      {invite.adultes + invite.enfants}{" "}
+                      {invite.is_family ? "personnes" : "personne"}
+                    </td>
+                    <td className="px-2 sm:px-4 py-2">
+                      <button
+                        onClick={() => handleDeleteClick(invite)}
+                        className="text-red-600 hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-center py-4 sm:py-6 italic text-gray-500">
               Aucun invité pour le moment...
             </p>
           )}
         </div>
+
+        {/* Modal de confirmation */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[95%] sm:w-[80%] md:max-w-md">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 text-center">
+                Confirmez la suppression
+              </h2>
+              <p className="mb-6 text-center">
+                Êtes-vous sûr de vouloir supprimer{" "}
+                <strong>
+                  {selectedInvite?.prenom} {selectedInvite?.nom}
+                </strong>{" "}
+                de la liste des invités ?
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={handleCloseModal}
+                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );
