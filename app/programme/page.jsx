@@ -58,7 +58,7 @@ export default function Programme() {
         </h1>
 
         {/* Conteneur principal avec hauteur fixe */}
-        <div className="bg-white bg-opacity-90 p-8 rounded-lg shadow-2xl max-w-2xl w-full iphone-se:p-6 iphone-14-pro:max-w-lg animate-slide-up min-h-[400px] h-[450px] flex flex-col justify-between">
+        <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-2xl max-w-2xl w-full iphone-se:p-6 iphone-14-pro:max-w-lg animate-slide-up min-h-[400px] h-[450px] flex flex-col justify-between">
           {/* Indicateur d'étape */}
           <div className="flex justify-center mb-4 space-x-2">
             {programmeData.map((item, index) => (

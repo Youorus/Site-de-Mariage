@@ -5,11 +5,10 @@ import Layout from "../components/Layout";
 export default function Invites() {
   const [invites, setInvites] = useState([]);
   const [totalInvites, setTotalInvites] = useState(0);
-  const [totalFamilles, setTotalFamilles] = useState(0);
+  const [totalCouples, setTotalCouples] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState(null);
 
-  // Fonction pour récupérer les données via API
   const fetchInvites = async () => {
     try {
       const response = await fetch("/api/invites", { method: "GET" });
@@ -20,15 +19,14 @@ export default function Invites() {
 
       setInvites(data);
 
-      // Calcul des totaux
       const totalPersons = data.reduce(
-        (acc, invite) => acc + invite.adultes + invite.enfants,
+        (acc, invite) => acc + 1 + (invite.nomPartenaire ? 1 : 0),
         0
       );
       setTotalInvites(totalPersons);
 
-      const totalFamilies = data.filter((invite) => invite.is_family).length;
-      setTotalFamilles(totalFamilies);
+      const totalCouples = data.filter((invite) => invite.nomPartenaire).length;
+      setTotalCouples(totalCouples);
     } catch (error) {
       console.error("Erreur:", error.message);
     }
@@ -38,13 +36,11 @@ export default function Invites() {
     fetchInvites();
   }, []);
 
-  // Fonction pour ouvrir le modal
   const handleDeleteClick = (invite) => {
     setSelectedInvite(invite);
     setShowModal(true);
   };
 
-  // Fonction pour confirmer la suppression
   const handleConfirmDelete = async () => {
     try {
       const response = await fetch(`/api/invites?id=${selectedInvite.id}`, {
@@ -63,7 +59,6 @@ export default function Invites() {
     }
   };
 
-  // Fonction pour fermer le modal
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedInvite(null);
@@ -72,12 +67,10 @@ export default function Invites() {
   return (
     <Layout>
       <div className="max-w-full sm:max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-8">
-        {/* Titre principal */}
         <h1 className="text-2xl sm:text-4xl font-extrabold text-center text-[#A87E6F] mb-6">
           Liste des Invités
         </h1>
 
-        {/* Section Totaux */}
         <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
           <div>
             <h2 className="text-lg sm:text-2xl font-semibold">
@@ -86,12 +79,11 @@ export default function Invites() {
           </div>
           <div>
             <h2 className="text-lg sm:text-2xl font-semibold">
-              Familles présentes : {totalFamilles}
+              Couples présents : {totalCouples}
             </h2>
           </div>
         </div>
 
-        {/* Table des invités */}
         <div className="h-[300px] sm:h-[400px] overflow-x-auto border-t border-gray-200 rounded-lg">
           {invites.length > 0 ? (
             <table className="w-full table-auto border-collapse text-sm sm:text-base">
@@ -99,10 +91,10 @@ export default function Invites() {
                 <tr className="bg-[#A87E6F] text-white">
                   <th className="px-2 sm:px-4 py-2 text-left">Nom</th>
                   <th className="px-2 sm:px-4 py-2 text-left">Prénom</th>
+                  <th className="px-2 sm:px-4 py-2 text-left">Partenaire</th>
                   <th className="px-2 sm:px-4 py-2 text-left">
                     Date de Confirmation
                   </th>
-                  <th className="px-2 sm:px-4 py-2 text-left">Nombre</th>
                   <th className="px-2 sm:px-4 py-2 text-left">Action</th>
                 </tr>
               </thead>
@@ -117,13 +109,12 @@ export default function Invites() {
                     <td className="px-2 sm:px-4 py-2">{invite.nom}</td>
                     <td className="px-2 sm:px-4 py-2">{invite.prenom}</td>
                     <td className="px-2 sm:px-4 py-2">
+                      {invite.nomPartenaire || "-"}
+                    </td>
+                    <td className="px-2 sm:px-4 py-2">
                       {new Date(invite.date_confirmation).toLocaleDateString(
                         "fr-FR"
                       )}
-                    </td>
-                    <td className=" sm:px-1 py-2">
-                      {invite.adultes + invite.enfants}{" "}
-                      {invite.is_family ? "personnes" : "personne"}
                     </td>
                     <td className="px-2 sm:px-4 py-2">
                       <button
@@ -144,7 +135,6 @@ export default function Invites() {
           )}
         </div>
 
-        {/* Modal de confirmation */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-[95%] sm:w-[80%] md:max-w-md">

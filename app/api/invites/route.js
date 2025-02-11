@@ -4,18 +4,15 @@ export async function GET(req) {
   try {
     const { rows: invites } = await sql`SELECT * FROM invites`;
 
-    const invitesWithCounts = invites.map((invite) => ({
+    const invitesWithDetails = invites.map((invite) => ({
       id: invite.id,
       nom: invite.nom,
       prenom: invite.prenom,
       date_confirmation: invite.date_confirmation,
-      is_family: invite.is_family,
-      adultes: invite.adultes,
-      enfants: invite.enfants,
-      total_personnes: invite.adultes + invite.enfants,
+      nomPartenaire: invite.nom_partenaire || null,
     }));
 
-    return new Response(JSON.stringify(invitesWithCounts), {
+    return new Response(JSON.stringify(invitesWithDetails), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -30,14 +27,9 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const body = await req.json();
-
-    console.log();
-
-    // Ajoutez une valeur par défaut pour `date_confirmation`
     const date_confirmation =
       body.date_confirmation || new Date().toISOString();
-
-    const { prenom, nom, isFamily, adultes, enfants } = body;
+    const { prenom, nom, isCouple, nomPartenaire } = body;
 
     if (!prenom || !nom) {
       return new Response(
@@ -50,10 +42,10 @@ export async function POST(req) {
     }
 
     const { rows } = await sql`
-        INSERT INTO invites (prenom, nom, date_confirmation, is_family, adultes, enfants)
-        VALUES (${prenom}, ${nom}, ${date_confirmation}, ${isFamily}, ${adultes}, ${enfants})
-        RETURNING id
-      `;
+      INSERT INTO invites (prenom, nom, date_confirmation, is_couple, nom_partenaire)
+      VALUES (${prenom}, ${nom}, ${date_confirmation}, ${isCouple}, ${nomPartenaire})
+      RETURNING id
+    `;
 
     return new Response(
       JSON.stringify({
