@@ -36,8 +36,6 @@ export default function Confirmation() {
       nomPartenaire: isCouple ? formData.get("nomPartenaire") : "",
     };
 
-    console.log("Données envoyées à l'API:", data);
-
     const errorMessage = validateInputs(data);
     if (errorMessage) {
       setFormError(errorMessage);
