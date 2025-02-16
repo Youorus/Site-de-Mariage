@@ -53,9 +53,9 @@ export default function Programme() {
     <Layout>
       <div className="flex flex-col items-center justify-center text-center flex-grow relative z-10 px-4 py-10">
         {/* Titre principal */}
-        <h1 className="text-5xl sm:text-7xl font-extrabold mb-6 text-white iphone-se:text-3xl iphone-14-pro:text-6xl">
+        <h2 className="text-5xl sm:text-7xl font-extrabold mb-6 text-white iphone-se:text-3xl iphone-14-pro:text-6xl">
           Programme
-        </h1>
+        </h2>
 
         {/* Conteneur principal avec hauteur fixe */}
         <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-2xl max-w-2xl w-full iphone-se:p-6 iphone-14-pro:max-w-lg animate-slide-up min-h-[400px] h-[450px] flex flex-col justify-between">
