@@ -20,9 +20,9 @@ export default function Layout({ children }) {
 
       <Header />
 
-      <main className="relative flex items-center justify-center flex-grow z-10 pt-20 sm:pt-24 lg:pt-28 opacity-0 animate-fade-in-bounce">
-        {children}
-      </main>
+    <main className="relative flex items-center justify-center flex-grow z-10 pt-44 sm:pt-36 lg:pt-40 opacity-0 animate-fade-in-bounce">
+  {children}
+</main>
 
       <Footer />
     </div>

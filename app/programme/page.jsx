@@ -6,32 +6,36 @@ const programmeData = [
   {
     id: 1,
     time: "14h00",
+    title: "Installation des invités",
+    description: "Accueil et installation des invités pour une journée inoubliable.",
+    location: "La Pelouse de la Grange Géraldine",
+  },
+  {
+    id: 2,
+    time: "15h00",
     title: "Cérémonie Religieuse",
     description: "Rejoignez-nous pour une cérémonie empreinte d'émotion.",
     location: "La Pelouse de la Grange Géraldine",
   },
   {
-    id: 2,
+    id: 3,
     time: "16h00",
     title: "Vin d’Honneur",
-    description:
-      "Partageons un moment convivial autour de délicieux rafraîchissements.",
+    description: "Partageons un moment convivial autour de délicieux rafraîchissements.",
     location: "La Terrasse de la Grange Géraldine",
   },
   {
-    id: 3,
+    id: 4,
     time: "18h00",
-    title: "Réception",
-    description:
-      "Un dîner festif et chaleureux vous attend dans un cadre élégant.",
+    title: "Réception & Dîner",
+    description: "Un dîner festif et chaleureux vous attend dans un cadre élégant.",
     location: "La Grange Géraldine",
   },
   {
-    id: 4,
+    id: 5,
     time: "22h00",
     title: "Ouverture du Bal",
-    description:
-      "Nous ouvrons la piste de danse pour une soirée mémorable pleine de joie.",
+    description: "Nous ouvrons la piste de danse pour une soirée mémorable pleine de joie.",
     location: "La Grange Géraldine",
   },
 ];
@@ -57,7 +61,7 @@ export default function Programme() {
           Programme
         </h2>
 
-        {/* Conteneur principal avec hauteur fixe */}
+        {/* Conteneur principal */}
         <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-2xl max-w-2xl w-full iphone-se:p-6 iphone-14-pro:max-w-lg animate-slide-up min-h-[400px] h-[450px] flex flex-col justify-between">
           {/* Indicateur d'étape */}
           <div className="flex justify-center mb-4 space-x-2">

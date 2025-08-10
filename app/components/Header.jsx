@@ -3,11 +3,54 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function Header() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const PDF_URL = "/Livret-Culte.pdf";
+
+  const [isInfosOpen, setIsInfosOpen] = useState(false);
+  const [isGiftOpen, setIsGiftOpen] = useState(false);
+  const [copyMsg, setCopyMsg] = useState(null);
+
+  const showCopied = (msg) => {
+    setCopyMsg(msg);
+    setTimeout(() => setCopyMsg(null), 1500);
+  };
+
+  const openPdfInNewTab = () => {
+    window.open(PDF_URL, "_blank", "noopener,noreferrer");
+  };
+
+  const NOMS = "Muriel Makwetche / Fabrice Talla";
+  const IBAN = "BE75 7320 7979 2251";
+  const BIC = "CREGBEBB";
+
+  const copyText = async (text, label) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback Safari iOS
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      showCopied(`${label} copié !`);
+    } catch {
+      showCopied(`Impossible de copier ${label}`);
+    }
+  };
+
+  const copyAll = () => {
+    const full = `${NOMS}\nIBAN: ${IBAN}\nBIC: ${BIC}`;
+    copyText(full, "Coordonnées");
+  };
 
   return (
     <header className="w-full flex flex-col md:flex-row justify-between items-center py-4 px-4 sm:px-12 absolute top-0 z-30 bg-transparent text-white">
-      {/* Logo cliquable */}
       <Link
         href="/"
         className="hidden md:block text-4xl sm:text-5xl font-extrabold cursor-pointer iphone-se:text-3xl iphone-14-pro:text-4xl"
@@ -15,32 +58,75 @@ export default function Header() {
         M&F
       </Link>
 
-      {/* Navigation principale */}
+      {/* Navigation */}
       <nav className="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-4 lg:space-x-8 w-full md:w-auto">
         <Link
           href="/programme"
-          className="w-full md:w-auto text-center whitespace-nowrap p-2 sm:p-4 text-sm sm:text-lg iphone-se:text-xs iphone-14-pro:text-sm border border-[var(--color-primary)] transition-all duration-300"
+          className="w-full md:w-auto text-center whitespace-nowrap p-2 sm:p-4 text-sm sm:text-lg border border-[var(--color-primary)] transition-all duration-300"
         >
           Programme
         </Link>
         <Link
           href="/notreHistoire"
-          className="w-full md:w-auto text-center whitespace-nowrap p-2 sm:p-4 text-sm sm:text-lg iphone-se:text-xs iphone-14-pro:text-sm border border-[var(--color-primary)] transition-all duration-300"
+          className="w-full md:w-auto text-center whitespace-nowrap p-2 sm:p-4 text-sm sm:text-lg border border-[var(--color-primary)] transition-all duration-300"
         >
           Notre histoire
         </Link>
         <Link
           href="/confirmation"
-          className="w-full md:w-auto text-center whitespace-nowrap p-2 sm:p-4 text-sm sm:text-lg iphone-se:text-xs iphone-14-pro:text-sm bg-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:scale-105 transition-all duration-300"
+          className="w-full md:w-auto text-center whitespace-nowrap p-2 sm:p-4 text-sm sm:text-lg bg-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:scale-105 transition-all duration-300"
         >
           Confirmation ma présence
         </Link>
-        <button onClick={() => setIsModalOpen(true)}>ℹ️ Infos</button>
+
+        {/* Mobile */}
+        <div className="w-full flex flex-col gap-2 md:hidden">
+          <div className="flex gap-2">
+            <button
+              onClick={openPdfInNewTab}
+              className="flex-1 px-2 py-1 text-xs border border-[var(--color-primary)] rounded-md hover:bg-white/10 transition whitespace-nowrap"
+            >
+              📄 Livret de Culte
+            </button>
+            <button
+              onClick={() => setIsGiftOpen(true)}
+              className="flex-1 px-2 py-1 text-xs border border-[var(--color-primary)] rounded-md hover:bg-white/10 transition whitespace-nowrap"
+            >
+              🎁 Cadeau
+            </button>
+          </div>
+          <button
+            onClick={() => setIsInfosOpen(true)}
+            className="px-2 py-1 text-xs border border-[var(--color-primary)] rounded-md hover:bg-white/10 transition"
+          >
+            ℹ️ Infos
+          </button>
+        </div>
+
+        {/* Desktop */}
+        <button
+          onClick={() => setIsInfosOpen(true)}
+          className="hidden md:inline-flex px-3 py-2 border border-[var(--color-primary)] rounded-md hover:bg-white/10 transition"
+        >
+          ℹ️ Infos
+        </button>
+        <button
+          onClick={openPdfInNewTab}
+          className="hidden md:inline-flex px-3 py-2 border border-[var(--color-primary)] rounded-md hover:bg-white/10 transition whitespace-nowrap"
+        >
+          📄 Livret de Culte
+        </button>
+        <button
+          onClick={() => setIsGiftOpen(true)}
+          className="hidden md:inline-flex px-3 py-2 border border-[var(--color-primary)] rounded-md hover:bg-white/10 transition whitespace-nowrap"
+        >
+          🎁 Cadeau
+        </button>
       </nav>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
+      {/* Modal Infos */}
+      {isInfosOpen && (
+       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
           <div className="bg-white text-black p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[85vh] overflow-y-auto animate-fade-in">
             <h2 className="text-xl font-bold mb-4 text-center">
               Informations Utiles
@@ -159,11 +245,80 @@ export default function Header() {
 
             {/* Bouton de fermeture */}
             <button
-              onClick={() => setIsModalOpen(false)}
+             onClick={() => setIsInfosOpen(false)}
               className="mt-4 px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded hover:bg-[var(--color-accent)] active:scale-95 transition-all duration-300 mx-auto block"
             >
               Fermer
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Cadeau */}
+      {isGiftOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setIsGiftOpen(false)}
+        >
+          <div
+            className="bg-white text-black p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-md sm:max-w-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-semibold text-center mb-3">🎁 Cadeau</h3>
+            <p className="text-gray-700 text-center mb-6">
+              Votre présence sera notre cadeau le plus précieux.  
+              Si vous souhaitez davantage participer à notre bonheur :
+            </p>
+
+            <div className="space-y-3 rounded-lg border p-4 bg-gray-50">
+              <div>
+                <p className="text-sm text-gray-600">Titulaire</p>
+                <p className="font-medium">{NOMS}</p>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm text-gray-600">IBAN</p>
+                  <p className="font-mono font-semibold tracking-wide">{IBAN}</p>
+                </div>
+                <button
+                  onClick={() => copyText(IBAN, "IBAN")}
+                  className="px-3 py-1.5 text-sm border rounded hover:bg-black/5 transition"
+                >
+                  Copier IBAN
+                </button>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm text-gray-600">BIC</p>
+                  <p className="font-mono font-semibold tracking-wide">{BIC}</p>
+                </div>
+                <button
+                  onClick={() => copyText(BIC, "BIC")}
+                  className="px-3 py-1.5 text-sm border rounded hover:bg-black/5 transition"
+                >
+                  Copier BIC
+                </button>
+              </div>
+              <div className="pt-2 flex items-center justify-between">
+                <button
+                  onClick={copyAll}
+                  className="px-3 py-2 text-sm border rounded hover:bg-black/5 transition"
+                >
+                  Copier tout
+                </button>
+                <button
+                  onClick={() => setIsGiftOpen(false)}
+                  className="px-3 py-2 text-sm border rounded hover:bg-black/5 transition"
+                >
+                  Fermer
+                </button>
+              </div>
+              {copyMsg && (
+                <div className="text-center text-sm text-green-700 bg-green-50 border border-green-200 rounded p-2">
+                  {copyMsg}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
