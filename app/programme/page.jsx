@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 const programmeData = [
   {
     id: 1,
-    time: "14h00",
+    time: "14h30",
     title: "Installation des invités",
     description: "Accueil et installation des invités pour une journée inoubliable.",
     location: "La Pelouse de la Grange Géraldine",
